@@ -45,9 +45,27 @@ class KioskViewModel(application: Application) : AndroidViewModel(application) {
     )
 
     private val cafeItems = listOf(
-        MenuItem("c1", "아메리카노", 2000, "커피", options = listOf(ItemOption("HOT"), ItemOption("ICE", 500))),
-        MenuItem("c2", "카페라떼", 3000, "커피", options = listOf(ItemOption("HOT"), ItemOption("ICE", 500))),
-        MenuItem("c3", "바닐라라떼", 3500, "커피", options = listOf(ItemOption("HOT"), ItemOption("ICE", 500))),
+        MenuItem(
+            "c1",
+            "아메리카노",
+            2000,
+            "커피",
+            options = listOf(ItemOption("HOT"), ItemOption("ICE", 500))
+        ),
+        MenuItem(
+            "c2",
+            "카페라떼",
+            3000,
+            "커피",
+            options = listOf(ItemOption("HOT"), ItemOption("ICE", 500))
+        ),
+        MenuItem(
+            "c3",
+            "바닐라라떼",
+            3500,
+            "커피",
+            options = listOf(ItemOption("HOT"), ItemOption("ICE", 500))
+        ),
         MenuItem("c4", "레몬에이드", 3500, "음료"),
         MenuItem("c5", "초코케이크", 5500, "디저트"),
         MenuItem("c6", "치즈케이크", 5500, "디저트")
@@ -55,15 +73,33 @@ class KioskViewModel(application: Application) : AndroidViewModel(application) {
 
     // === 2. 미션 데이터 분리 ===
     private val burgerMissions = listOf(
-        Mission("새우버거 3개, 콜라 1잔을 주문해보세요", listOf(RequiredItem("새우버거", 3), RequiredItem("콜라", 1))),
-        Mission("불고기버거 2개, 감자튀김 1개를 주문해보세요", listOf(RequiredItem("불고기버거", 2), RequiredItem("감자튀김", 1))),
-        Mission("치즈버거 1개, 사이다 2잔을 주문해보세요", listOf(RequiredItem("치즈버거", 1), RequiredItem("사이다", 2)))
+        Mission(
+            "새우버거 3개, 콜라 1잔을 주문해보세요",
+            listOf(RequiredItem("새우버거", 3), RequiredItem("콜라", 1))
+        ),
+        Mission(
+            "불고기버거 2개, 감자튀김 1개를 주문해보세요",
+            listOf(RequiredItem("불고기버거", 2), RequiredItem("감자튀김", 1))
+        ),
+        Mission(
+            "치즈버거 1개, 사이다 2잔을 주문해보세요",
+            listOf(RequiredItem("치즈버거", 1), RequiredItem("사이다", 2))
+        )
     )
 
     private val cafeMissions = listOf(
-        Mission("아이스 아메리카노 2잔을 주문해보세요", listOf(RequiredItem("아메리카노", 2))),
-        Mission("카페라떼 1잔, 초코케이크 1개를 주문해보세요", listOf(RequiredItem("카페라떼", 1), RequiredItem("초코케이크", 1))),
-        Mission("레몬에이드 1잔, 치즈케이크 1개를 주문해보세요", listOf(RequiredItem("레몬에이드", 1), RequiredItem("치즈케이크", 1)))
+        Mission(
+            "아이스 아메리카노 2잔을 주문해보세요",
+            listOf(RequiredItem("아메리카노", 2))
+        ),
+        Mission(
+            "카페라떼 1잔, 초코케이크 1개를 주문해보세요",
+            listOf(RequiredItem("카페라떼", 1), RequiredItem("초코케이크", 1))
+        ),
+        Mission(
+            "레몬에이드 1잔, 치즈케이크 1개를 주문해보세요",
+            listOf(RequiredItem("레몬에이드", 1), RequiredItem("치즈케이크", 1))
+        )
     )
 
     // === 3. 초기화 함수 수정 (타입 전달받음) ===
@@ -104,8 +140,13 @@ class KioskViewModel(application: Application) : AndroidViewModel(application) {
     fun getConfig(): KioskType = currentType
 
     // === 아래 로직들은 기존과 동일 ===
-    fun startPractice() { _practiceStep.value = 1 }
-    fun selectCategory(isPractice: Boolean) { if (isPractice && _practiceStep.value == 1) _practiceStep.value = 2 }
+    fun startPractice() {
+        _practiceStep.value = 1
+    }
+
+    fun selectCategory(isPractice: Boolean) {
+        if (isPractice && _practiceStep.value == 1) _practiceStep.value = 2
+    }
 
     fun addToCart(item: MenuItem, isPractice: Boolean, option: ItemOption? = null) {
         val currentCart = _cart.value.toMutableList()
@@ -131,7 +172,8 @@ class KioskViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun updateTotal() {
-        _totalPrice.value = _cart.value.sumOf { (it.menuItem.price + (it.selectedOption?.price ?: 0)) * it.quantity }
+        _totalPrice.value =
+            _cart.value.sumOf { (it.menuItem.price + (it.selectedOption?.price ?: 0)) * it.quantity }
     }
 
     fun checkout(isPractice: Boolean) {
@@ -146,12 +188,10 @@ class KioskViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun checkMissionSuccess(mission: Mission, cart: List<CartItem>): Boolean {
-        // 필수 조건들을 모두 만족하는지 확인
         return mission.required.all { req ->
-            // 장바구니에서 해당 메뉴를 찾아서 수량이 일치하는지 확인
             val cartItem = cart.find { it.menuItem.name == req.name }
             cartItem != null && cartItem.quantity == req.quantity
-        } && cart.size == mission.required.size // (선택사항) 정확히 미션 품목만 샀는지 확인할 때 필요
+        } && cart.size == mission.required.size
     }
 
     private fun saveHistory(mission: Mission, success: Boolean) {

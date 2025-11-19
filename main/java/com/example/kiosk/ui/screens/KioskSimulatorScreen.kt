@@ -82,30 +82,55 @@ fun KioskSimulatorScreen(
                 BottomAppBar(containerColor = Color.White, tonalElevation = 8.dp) {
                     Button(
                         onClick = { showCartDialog = true },
-                        modifier = Modifier.fillMaxWidth().padding(16.dp).height(56.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .height(56.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = kioskType.themeColor), // 👈 버튼 색상도 테마에 맞춤
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(Icons.Default.ShoppingCart, null)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text("장바구니", fontSize = 18.sp)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Surface(shape = CircleShape, color = Color.White, modifier = Modifier.size(24.dp)) {
+                                Surface(
+                                    shape = CircleShape,
+                                    color = Color.White,
+                                    modifier = Modifier.size(24.dp)
+                                ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Text("${cart.sumOf { it.quantity }}", color = kioskType.themeColor, fontSize = 14.sp, fontWeight = FontWeight.Bold) // 👈 수량 배지 색상 변경
+                                        Text(
+                                            "${cart.sumOf { it.quantity }}",
+                                            color = kioskType.themeColor,
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Bold
+                                        ) // 👈 수량 배지 색상 변경
                                     }
                                 }
                             }
-                            Text("${NumberFormat.getNumberInstance(Locale.KOREA).format(totalPrice)}원", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                "${NumberFormat.getNumberInstance(Locale.KOREA).format(totalPrice)}원",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }
             }
         }
     ) { padding ->
-        Column(modifier = Modifier.padding(padding).fillMaxSize().background(Color(0xFFF9FAFB))) {
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+                .background(Color(0xFFF9FAFB))
+        ) {
             if (isPracticeMode) PracticeGuide(step = practiceStep)
             if (!isPracticeMode && currentMission != null) MissionGuide(mission = currentMission!!.text)
 
@@ -173,40 +198,87 @@ fun KioskSimulatorScreen(
 // ==================== 하위 컴포넌트들도 테마를 적용하도록 수정 ====================
 
 @Composable
-fun CategoryTabs(categories: List<String>, selectedCategory: String, themeColor: Color, onSelect: (String) -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth().background(Color.White).padding(12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+fun CategoryTabs(
+    categories: List<String>,
+    selectedCategory: String,
+    themeColor: Color,
+    onSelect: (String) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .padding(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         categories.forEach { category ->
             val isSelected = category == selectedCategory
             Button(
                 onClick = { onSelect(category) },
-                modifier = Modifier.weight(1f).height(48.dp),
-                // 선택된 탭의 색상을 themeColor로 변경
+                modifier = Modifier
+                    .weight(1f)
+                    .height(48.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (isSelected) themeColor else Color(0xFFF3F4F6),
                     contentColor = if (isSelected) Color.White else Color(0xFF374151)
                 ),
                 shape = RoundedCornerShape(8.dp)
-            ) { Text(category, fontSize = 18.sp) }
+            ) {
+                Text(category, fontSize = 18.sp)
+            }
         }
     }
 }
 
 @Composable
-fun MenuList(menuItems: List<MenuItem>, defaultIcon: String, themeColor: Color, onAdd: (MenuItem) -> Unit) {
-    LazyVerticalGrid(columns = GridCells.Fixed(2), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+fun MenuList(
+    menuItems: List<MenuItem>,
+    defaultIcon: String,
+    themeColor: Color,
+    onAdd: (MenuItem) -> Unit
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         items(menuItems) { item ->
-            KioskCard(onClick = { onAdd(item) }, modifier = Modifier.fillMaxWidth()) {
+            KioskCard(
+                onClick = { onAdd(item) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Box(modifier = Modifier.fillMaxWidth().aspectRatio(1f).background(Color(0xFFE5E7EB), RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) {
-                        Text(defaultIcon, fontSize = 64.sp) // 👈 전달받은 아이콘 사용
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .background(Color(0xFFE5E7EB), RoundedCornerShape(8.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(defaultIcon, fontSize = 64.sp)
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(item.name, fontSize = 18.sp, fontWeight = FontWeight.Medium, maxLines = 1)
                     Spacer(modifier = Modifier.height(4.dp))
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                        Text("${NumberFormat.getNumberInstance(Locale.KOREA).format(item.price)}원", fontSize = 16.sp, color = Color(0xFF4B5563))
-                        // 플러스 버튼 색상도 테마에 맞춤
-                        Icon(Icons.Default.Add, null, tint = themeColor, modifier = Modifier.background(themeColor.copy(alpha = 0.1f), CircleShape).padding(4.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "${NumberFormat.getNumberInstance(Locale.KOREA).format(item.price)}원",
+                            fontSize = 16.sp,
+                            color = Color(0xFF4B5563)
+                        )
+                        Icon(
+                            Icons.Default.Add,
+                            null,
+                            tint = themeColor,
+                            modifier = Modifier
+                                .background(themeColor.copy(alpha = 0.1f), CircleShape)
+                                .padding(4.dp)
+                        )
                     }
                 }
             }
@@ -224,89 +296,217 @@ fun CartDialog(
     onCheckout: () -> Unit
 ) {
     Dialog(onDismissRequest = onDismiss) {
-        Card(modifier = Modifier.fillMaxWidth().heightIn(max = 600.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
-            Column(modifier = Modifier.padding(24.dp)) {
-                Row(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 600.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text("장바구니", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                    IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, "닫기", tint = Color.Gray) }
-                }
-                HorizontalDivider(modifier = Modifier.padding(bottom = 16.dp))
-                if (cart.isEmpty()) {
-                    Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) { Text("장바구니가 비었습니다", fontSize = 18.sp, color = Color.Gray) }
-                } else {
-                    LazyColumn(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        items(cart) { item -> CartItemRow(item, onUpdateQty) }
+                    IconButton(onClick = onDismiss) {
+                        Icon(Icons.Default.Close, contentDescription = "닫기", tint = Color.Gray)
                     }
                 }
-                HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
-                Row(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text("총 금액", fontSize = 20.sp, fontWeight = FontWeight.Medium)
-                    Text("${NumberFormat.getNumberInstance(Locale.KOREA).format(totalPrice)}원", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = themeColor) // 👈 총 금액 색상
+
+                HorizontalDivider(modifier = Modifier.padding(bottom = 16.dp))
+
+                if (cart.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("장바구니가 비었습니다", fontSize = 18.sp, color = Color.Gray)
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(cart) { item ->
+                            CartItemRow(item = item, onUpdateQty = onUpdateQty)
+                        }
+                    }
                 }
-                Button(onClick = onCheckout, modifier = Modifier.fillMaxWidth().height(56.dp), enabled = cart.isNotEmpty(), shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = themeColor, disabledContainerColor = Color.Gray)) { // 👈 결제 버튼 색상
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("총 금액", fontSize = 20.sp, fontWeight = FontWeight.Medium)
+                    Text(
+                        "${NumberFormat.getNumberInstance(Locale.KOREA).format(totalPrice)}원",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = themeColor
+                    )
+                }
+
+                Button(
+                    onClick = onCheckout,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    enabled = cart.isNotEmpty(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = themeColor,
+                        disabledContainerColor = Color.Gray
+                    )
+                ) {
                     Text("결제하기", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }
     }
 }
+
 @Composable
 fun PracticeGuide(step: Int) {
-    val messages = listOf("화면 하단의 '시작하기' 버튼을 눌러주세요", "원하시는 메뉴 종류를 선택해주세요", "메뉴를 터치해서 선택해주세요", "하단 장바구니를 눌러 결제해주세요")
+    val messages = listOf(
+        "화면 하단의 '시작하기' 버튼을 눌러주세요",
+        "원하시는 메뉴 종류를 선택해주세요",
+        "메뉴를 터치해서 선택해주세요",
+        "하단 장바구니를 눌러 결제해주세요"
+    )
     val message = messages.getOrElse(step.coerceAtLeast(1) - 1) { "" }
-    Box(modifier = Modifier.fillMaxWidth().background(Color(0xFF2563EB)).padding(12.dp), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFF2563EB))
+            .padding(12.dp),
+        contentAlignment = Alignment.Center
+    ) {
         Text(message, color = Color.White, fontSize = 16.sp)
     }
 }
 
 @Composable
 fun MissionGuide(mission: String) {
-    Box(modifier = Modifier.fillMaxWidth().background(Color(0xFFEA580C)).padding(12.dp), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFFEA580C))
+            .padding(12.dp),
+        contentAlignment = Alignment.Center
+    ) {
         Text("🎯 $mission", color = Color.White, fontSize = 16.sp)
     }
 }
 
 @Composable
 fun WelcomeScreen(onStart: () -> Unit) {
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         Text("👋", fontSize = 80.sp)
         Spacer(modifier = Modifier.height(24.dp))
         Text("환영합니다!", fontSize = 30.sp, fontWeight = FontWeight.Bold)
-        Text("주문을 시작하려면\n아래 버튼을 눌러주세요", textAlign = TextAlign.Center, color = Color.Gray, fontSize = 18.sp)
+        Text(
+            "주문을 시작하려면\n아래 버튼을 눌러주세요",
+            textAlign = TextAlign.Center,
+            color = Color.Gray,
+            fontSize = 18.sp
+        )
         Spacer(modifier = Modifier.height(40.dp))
-        Button(onClick = onStart, modifier = Modifier.height(64.dp).width(200.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB))) {
+        Button(
+            onClick = onStart,
+            modifier = Modifier
+                .height(64.dp)
+                .width(200.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB))
+        ) {
             Text("시작하기", fontSize = 24.sp)
         }
     }
 }
 
 @Composable
-fun CategoryTabs(categories: List<String>, selectedCategory: String, onSelect: (String) -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth().background(Color.White).padding(12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+fun CategoryTabs(
+    categories: List<String>,
+    selectedCategory: String,
+    onSelect: (String) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .padding(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         categories.forEach { category ->
             val isSelected = category == selectedCategory
             Button(
                 onClick = { onSelect(category) },
-                modifier = Modifier.weight(1f).height(48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = if (isSelected) Color(0xFFDC2626) else Color(0xFFF3F4F6), contentColor = if (isSelected) Color.White else Color(0xFF374151)),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(48.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isSelected) Color(0xFFDC2626) else Color(0xFFF3F4F6),
+                    contentColor = if (isSelected) Color.White else Color(0xFF374151)
+                ),
                 shape = RoundedCornerShape(8.dp)
-            ) { Text(category, fontSize = 18.sp) }
+            ) {
+                Text(category, fontSize = 18.sp)
+            }
         }
     }
 }
 
 @Composable
-fun MenuList(menuItems: List<MenuItem>, onAdd: (MenuItem) -> Unit) {
-    LazyVerticalGrid(columns = GridCells.Fixed(1), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+fun MenuList(
+    menuItems: List<MenuItem>,
+    onAdd: (MenuItem) -> Unit
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(1),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         items(menuItems) { item ->
-            KioskCard(onClick = { onAdd(item) }, modifier = Modifier.fillMaxWidth()) {
-                Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Box(modifier = Modifier.size(80.dp).background(Color(0xFFE5E7EB), RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) { Text("🍔", fontSize = 40.sp) }
+            KioskCard(
+                onClick = { onAdd(item) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(80.dp)
+                            .background(Color(0xFFE5E7EB), RoundedCornerShape(8.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("🍔", fontSize = 40.sp)
+                    }
                     Spacer(modifier = Modifier.width(16.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(item.name, fontSize = 20.sp, fontWeight = FontWeight.Medium)
-                        Text("${NumberFormat.getNumberInstance(Locale.KOREA).format(item.price)}원", fontSize = 18.sp, color = Color(0xFF4B5563))
+                        Text(
+                            "${NumberFormat.getNumberInstance(Locale.KOREA).format(item.price)}원",
+                            fontSize = 18.sp,
+                            color = Color(0xFF4B5563)
+                        )
                     }
                     Icon(Icons.Default.Add, null, tint = Color(0xFFDC2626))
                 }
@@ -423,7 +623,11 @@ private fun CartItemRow(
         Column(modifier = Modifier.weight(1f)) {
             Text(item.menuItem.name, fontSize = 18.sp, fontWeight = FontWeight.Medium)
             if (item.selectedOption != null) {
-                Text("(${item.selectedOption.name})", fontSize = 14.sp, color = Color(0xFF2563EB)) // 파란색 등으로 강조
+                Text(
+                    "(${item.selectedOption.name})",
+                    fontSize = 14.sp,
+                    color = Color(0xFF2563EB)
+                ) // 파란색 등으로 강조
             }
             Text(
                 "${NumberFormat.getNumberInstance(Locale.KOREA).format((item.menuItem.price + (item.selectedOption?.price ?: 0)) * item.quantity)}원",
@@ -444,7 +648,12 @@ private fun CartItemRow(
                 contentPadding = PaddingValues(0.dp),
                 border = BorderStroke(1.dp, Color(0xFFE5E7EB)) // gray-200
             ) {
-                Icon(Icons.Default.Remove, contentDescription = "감소", modifier = Modifier.size(16.dp), tint = Color.Gray)
+                Icon(
+                    Icons.Default.Remove,
+                    contentDescription = "감소",
+                    modifier = Modifier.size(16.dp),
+                    tint = Color.Gray
+                )
             }
 
             Text(
@@ -462,11 +671,17 @@ private fun CartItemRow(
                 contentPadding = PaddingValues(0.dp),
                 border = BorderStroke(1.dp, Color(0xFFE5E7EB))
             ) {
-                Icon(Icons.Default.Add, contentDescription = "증가", modifier = Modifier.size(16.dp), tint = Color.Gray)
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = "증가",
+                    modifier = Modifier.size(16.dp),
+                    tint = Color.Gray
+                )
             }
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderResultScreen(
@@ -492,7 +707,13 @@ fun OrderResultScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(resultTitle, color = Color.White, fontWeight = FontWeight.Bold) },
+                title = {
+                    Text(
+                        resultTitle,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
                 actions = {
                     IconButton(onClick = onExit) {
                         Icon(Icons.Default.Home, contentDescription = "홈으로", tint = Color.White)
@@ -520,7 +741,12 @@ fun OrderResultScreen(
                 modifier = Modifier.size(100.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(resultIcon, contentDescription = null, tint = Color.White, modifier = Modifier.size(64.dp))
+                    Icon(
+                        resultIcon,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(64.dp)
+                    )
                 }
             }
 
@@ -540,7 +766,7 @@ fun OrderResultScreen(
                     else -> "주문이 접수되었습니다\n번호표를 받아 기다려주세요"
                 },
                 fontSize = 18.sp,
-                color = Color(0xFF4B5563), // gray-600
+                color = Color(0xFF4B5563),
                 textAlign = TextAlign.Center,
                 lineHeight = 26.sp
             )
@@ -550,12 +776,20 @@ fun OrderResultScreen(
             // 실패 시 미션 리마인드 카드
             if (result == "fail" && mission != null) {
                 KioskCard(
-                    backgroundColor = Color(0xFFFEFCE8), // yellow-50
-                    borderColor = Color(0xFFFEF08A),     // yellow-200
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)
+                    backgroundColor = Color(0xFFFEFCE8),
+                    borderColor = Color(0xFFFEF08A),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text("미션", fontSize = 16.sp, color = Color(0xFF854D0E), fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 8.dp)) // yellow-800
+                        Text(
+                            "미션",
+                            fontSize = 16.sp,
+                            color = Color(0xFF854D0E),
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        ) // yellow-800
                         Text(mission.text, fontSize = 18.sp, color = Color(0xFF713F12)) // yellow-900
                     }
                 }
@@ -563,19 +797,32 @@ fun OrderResultScreen(
 
             // 영수증 카드
             KioskCard(
-                backgroundColor = Color(0xFFF9FAFB), // gray-50
-                borderColor = Color(0xFFE5E7EB),     // gray-200
-                modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp)
+                backgroundColor = Color(0xFFF9FAFB),
+                borderColor = Color(0xFFE5E7EB),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp)
             ) {
                 Column(modifier = Modifier.padding(24.dp)) {
-                    Text("주문 내역", fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 16.dp))
+                    Text(
+                        "주문 내역",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
 
                     cart.forEach { item ->
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("${item.menuItem.name} × ${item.quantity}", fontSize = 18.sp, color = Color(0xFF374151))
+                            Text(
+                                "${item.menuItem.name} × ${item.quantity}",
+                                fontSize = 18.sp,
+                                color = Color(0xFF374151)
+                            )
                             Text(
                                 "${NumberFormat.getNumberInstance(Locale.KOREA).format(item.menuItem.price * item.quantity)}원",
                                 fontSize = 18.sp,
@@ -605,7 +852,9 @@ fun OrderResultScreen(
             // 하단 버튼
             Button(
                 onClick = onExit,
-                modifier = Modifier.fillMaxWidth().height(60.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = themeColor)
             ) {
